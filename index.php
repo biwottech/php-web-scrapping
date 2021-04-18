@@ -1,5 +1,8 @@
-<?php
-# index.php
+<?php 
+
+include_once('./db-connect.php'); 
+
+$dbconn = connect_db(); 
 
 $html = file_get_contents('https://en.wikipedia.org/wiki/December_10');
 
@@ -21,9 +24,10 @@ echo "=============================\n\n";
 foreach ($listItems as $item) {
     preg_match('@(\d+)@', $item, $yearMatch);
     $year = (int) $yearMatch[0];
-
     preg_match('@;\s<a\b[^>]*>(.*?)</a>@i', $item, $nameMatch);
     $name = $nameMatch[1];
+    echo "{$name} was born in {$year} <br>";
 
-    echo "{$name} was born in {$year}\n";
+    $sql = "INSERT INTO scrapping (name, dbyear) VALUES ($name, $year)"; 
+    $dbconn->exec($sql);
 }
